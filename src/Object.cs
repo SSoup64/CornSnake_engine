@@ -5,13 +5,13 @@ using SDL2;
 namespace CornSnake {
 	public class Object {
 		// Attributes
-		public double	x = 0,				// X position
-						y = 0;				// Y position
+		public double	x = 0,					// X position
+						y = 0;					// Y position
 
-		public Sprite	sprite;				// The default sprite variable for the object 
+		public Sprite	sprite;					// The default sprite variable for the object 
 
-		public bool		global = false;		// If set to true, the object won't be deleted when going between rooms.
-											// These objects may only be created at before the game runs.
+		public bool		is_global = false;		// If set to true, the object won't be deleted when going between rooms.
+												// These objects may only be created at before the game runs.
 
 		// Events
 		public void onCreate(ref Game game)		{}
