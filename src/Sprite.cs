@@ -14,9 +14,5 @@ namespace CornSnake {
 				frames.Add(SDL_image.IMG_LoadTexture(game.renderer, $"{folder_path}/img_{i}"));
 			}
 		}
-
-		~Sprite() {
-			frames = null;
-		}
 	}
 }

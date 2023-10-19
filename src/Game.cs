@@ -10,9 +10,12 @@ namespace CornSnake {
 		public IntPtr window;
 
 		private bool initialized = false;
+
+		public uint fps = 60;
 		
 		// Constructor
-		public Game() {
+		public Game(uint fps) {
+			this.fps = fps;
 			objects = new List<Object>();
 		}
 		
@@ -46,8 +49,16 @@ namespace CornSnake {
 			bool end = false;
 			SDL.SDL_Event ev;
 
+			UInt32 frame_start;
+			uint frame_time;
+			uint frame_delay = 1000/this.fps;
+
 			// Enter the loop
 			while (!end) {
+				// Get the start time of the frame
+				frame_start = SDL.SDL_GetTicks();
+				
+				// Poll the events
 				while (SDL.SDL_PollEvent(out ev) != 0) {
 					switch (ev.type) {
 						case SDL.SDL_EventType.SDL_QUIT:
@@ -55,6 +66,14 @@ namespace CornSnake {
 							break;
 					}
 				}
+				
+				// Find out how much to delay in order to get a consistant fps
+				frame_time = SDL.SDL_GetTicks() - frame_start;
+				
+				if (frame_time < frame_delay)
+					SDL.SDL_Delay(frame_delay - frame_time);
+
+				Console.WriteLine("Finished a frame");
 			}
 
 			SDL.SDL_DestroyWindow(window);

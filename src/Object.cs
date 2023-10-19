@@ -14,10 +14,10 @@ namespace CornSnake {
 												// These objects may only be created at before the game runs.
 
 		// Events
-		public void onCreate(ref Game game)		{}
-		public void onUpdate(ref Game game)		{}
-		public void onDestroy(ref Game game)	{}
-		public void onRender(ref Game game)		{}
+		public void onCreate(ref Game game)							{}
+		public void onUpdate(ref Game game)							{}
+		public void onDestroy(ref Game game)						{}
+		public void onRender(ref Game game, ref IntPtr surf)		{}
 
 		// Constructor and destructor
 		public Object(ref Game game) {
