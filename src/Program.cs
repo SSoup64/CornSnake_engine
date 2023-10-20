@@ -10,11 +10,6 @@ namespace Program {
 
 			this.sprite = new Sprite(ref game, "./spr_test/");
 		}
-
-		public void onRender(ref Game game) {
-			// Console.WriteLine("RENDERING");
-			game.renderDrawSprite(10, 10, this.sprite);
-		}
 	}
 
 	class Program {
@@ -26,7 +21,7 @@ namespace Program {
 			game.cameraResize(256, 192);
 			
 			// Create objects
-			game.newObject<ObjTest>(0, 0);
+			game.newObject<ObjTest>(32, 16);
 			
 			// Run the game
 			game.run();
