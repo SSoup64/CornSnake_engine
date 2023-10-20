@@ -6,7 +6,7 @@ namespace CornSnake {
 	public class Sprite {
 		List<IntPtr> frames = new List<IntPtr>();
 
-		public Sprite(Game game, string folder_path) {
+		public Sprite(ref Game game, string folder_path) {
 			if (!Directory.Exists(folder_path))
 				throw new Exception($"Directory {folder_path} does not exist!");
 			

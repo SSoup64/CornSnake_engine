@@ -154,7 +154,8 @@ namespace CornSnake {
 			var me = this;
 
 			foreach (var i in index_render_order) {
-				objects[i].onRender(ref me);
+				// TODO make this use the correct onRender function
+				((objects[i].my_type) objects[i]).onRender(ref me);
 			}
 		}
 
@@ -172,17 +173,17 @@ namespace CornSnake {
 		// }
 
 		// Functions that deal with objects
-		public void newObject<T>(double x, double y) {
+		public void newObject<T>(int x, int y) where T : Object, new() {
 			var me = this;
 
-			Object base_obj = new Object(ref me);
+			T obj = new T();
 
-			base_obj.x = x;
-			base_obj.y = y;
+			((dynamic) obj).onCreate(ref me);
 
-			// T obj = (T) (Convert.ChangeType(base_obj, typeof(T)));
+			obj.x = x;
+			obj.y = y;
 
-			objects.Add((Object) (Convert.ChangeType(base_obj, typeof(T))));
+			objects.Add((Object) obj);
 		}
 	}
 }
