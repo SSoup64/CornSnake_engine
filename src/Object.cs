@@ -5,6 +5,7 @@ using SDL2;
 namespace CornSnake {
 	public class Object {
 		// Attributes
+		private uint	index;
 		public double	x = 0,					// X position
 						y = 0;					// Y position
 
@@ -14,10 +15,10 @@ namespace CornSnake {
 												// These objects may only be created at before the game runs.
 
 		// Events
-		public void onCreate(ref Game game)							{}
-		public void onUpdate(ref Game game)							{}
-		public void onDestroy(ref Game game)						{}
-		public void onRender(ref Game game, ref IntPtr surf)		{}
+		public void onCreate(ref Game game)		{}
+		public void onUpdate(ref Game game)		{}
+		public void onDestroy(ref Game game)	{}
+		public void onRender(ref Game game)		{}
 
 		// Constructor and destructor
 		public Object(ref Game game) {
