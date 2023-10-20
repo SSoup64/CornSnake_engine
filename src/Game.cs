@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using SDL2;
 
 namespace CornSnake {
 	public class Game {
 		// Attributes
-		private List<Object>	objects;
+		private List<object>	objects;
 		private List<int>		index_render_order;
 			
 		int window_width, window_height;
@@ -18,6 +19,7 @@ namespace CornSnake {
 		// Camera variables
 		SDL.SDL_Rect camera_rect;
 		public IntPtr camera_surface;
+		public IntPtr camera_tex;
 
 		private bool initialized = false;
 		private bool rendering = false;
@@ -28,7 +30,7 @@ namespace CornSnake {
 		public Game(uint fps) {
 			this.fps = fps;
 
-			objects				= new List<Object>();
+			objects				= new List<object>();
 			index_render_order	= new List<int>();
 		}
 		
@@ -131,10 +133,12 @@ namespace CornSnake {
 			this.renderObjects();
 
 			// Make the surface into a texture
-			IntPtr tex = SDL.SDL_CreateTextureFromSurface(this.renderer, this.camera_surface);
+			this.camera_tex = SDL.SDL_CreateTextureFromSurface(this.renderer, this.camera_surface);
 
 			// Copy to the renderer
-			SDL.SDL_RenderCopy(this.renderer, tex, ref camera_rect, ref renderer_rect);
+			SDL.SDL_RenderCopy(this.renderer, this.camera_tex, ref camera_rect, ref renderer_rect);
+			
+			SDL.SDL_DestroyTexture(this.camera_tex);
 
 			this.rendering = false;
 		}
@@ -146,16 +150,19 @@ namespace CornSnake {
 				return;
 			
 			index_render_order.Clear();
-			index_render_order = Enumerable.Range(0, objects.Count - 1).ToList();
+			index_render_order = Enumerable.Range(0, objects.Count).ToList();
 			
 			// TODO: Sort the index_render_order list using the depth of the corresponding object.
+
 
 			// Render the objects
 			var me = this;
 
 			foreach (var i in index_render_order) {
-				// TODO make this use the correct onRender function
-				((objects[i].my_type) objects[i]).onRender(ref me);
+				var type = objects[i].GetType();
+				var render_func = type.GetMethod("onRender");
+
+				render_func.Invoke(objects[i], new object[] {me});
 			}
 		}
 
@@ -163,10 +170,25 @@ namespace CornSnake {
 
 		// Other functions
 		// Functions that deal with the rendering
-		public void renderSetColor(byte red, byte green, byte blue, byte alpha=255) {
+		public void renderSetColor(byte red, byte green, byte blue, byte alpha=255) {	// Sets the renderer's color
 			SDL.SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);
 		}
 		
+		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
+			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
+			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x, y = _y };
+			
+			unsafe {
+				SDL.SDL_Surface *sur = (SDL.SDL_Surface *) sprite.frames[index];
+
+				src_rect.w = dst_rect.h = sur->w;
+				src_rect.h = dst_rect.h = sur->h;
+			}
+
+			SDL.SDL_BlitSurface(sprite.frames[index], ref src_rect, this.camera_surface, ref dst_rect);
+		}
+
+
 		// TODO: Implement this later
 		//public void renderDrawRect(int x1, int y1, int x2, int y2) {
 		//
@@ -184,6 +206,19 @@ namespace CornSnake {
 			obj.y = y;
 
 			objects.Add((Object) obj);
+		}
+	
+		// Functions that deal with the camera
+		public void cameraResize(int w, int h) {
+			this.camera_rect.w = w;
+			this.camera_rect.h = h;
+			
+			SDL.SDL_FreeSurface(this.camera_surface);
+
+			
+			camera_surface = SDL.SDL_CreateRGBSurface(	0,
+														camera_rect.w, camera_rect.h,
+														32, 0, 0, 0, 0);
 		}
 	}
 }

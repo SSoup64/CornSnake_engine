@@ -12,7 +12,8 @@ namespace Program {
 		}
 
 		public void onRender(ref Game game) {
-			Console.WriteLine("RENDERING");
+			// Console.WriteLine("RENDERING");
+			game.renderDrawSprite(10, 10, this.sprite);
 		}
 	}
 
@@ -20,7 +21,9 @@ namespace Program {
 		static void Main(string[] args) {
 			// Create game object and initialize it.
 			CornSnake.Game game = new CornSnake.Game(60);
+
 			game.init(1024, 768);
+			game.cameraResize(256, 192);
 			
 			// Create objects
 			game.newObject<ObjTest>(0, 0);
