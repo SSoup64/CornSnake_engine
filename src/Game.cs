@@ -9,22 +9,24 @@ namespace CornSnake {
 		private List<object>	objects;
 		private List<int>		index_render_order;
 			
-		int window_width, window_height;
-		public IntPtr window;
+		private int window_width, window_height;
+		private IntPtr window;
 		
 		// Renderer variables
-		SDL.SDL_Rect renderer_rect;
-		public IntPtr renderer;
+		private SDL.SDL_Rect renderer_rect;
+		private IntPtr renderer;
 		
 		// Camera variables
 		SDL.SDL_Rect camera_rect;
-		public IntPtr camera_surface;
-		public IntPtr camera_tex;
+		private IntPtr camera_surface;
+		private IntPtr camera_tex;
 
 		private bool initialized = false;
 		private bool rendering = false;
 
-		public uint fps = 60;
+		private uint fps = 60;
+
+		private uint cur_game_frame = 0;
 		
 		// Constructor
 		public Game(uint fps) {
@@ -82,6 +84,7 @@ namespace CornSnake {
 			UInt32 frame_start;
 			uint frame_time;
 			uint frame_delay = 1000/this.fps;
+			var me = this;
 
 			// Enter the loop
 			while (!end) {
@@ -97,10 +100,13 @@ namespace CornSnake {
 					}
 				}
 				
-				// Find out how much to delay in order to get a consistant fps
-				frame_time = SDL.SDL_GetTicks() - frame_start;
-				
+				// Run the update function on all the objects
 
+				foreach (var i in index_render_order) {
+					var update_func = objects[i].GetType().GetMethod("onUpdate");
+					update_func.Invoke(objects[i], new object[] {me});
+				}
+				
 				// Clear the renderer
 				SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 				SDL.SDL_RenderClear(this.renderer);
@@ -112,9 +118,15 @@ namespace CornSnake {
 
 				// Present the renderer
 				SDL.SDL_RenderPresent(this.renderer);
+				
+				// Find out how much to delay in order to get a consistant fps
+				frame_time = SDL.SDL_GetTicks() - frame_start;
 
 				if (frame_time < frame_delay)
 					SDL.SDL_Delay(frame_delay - frame_time);
+
+				// Increment frame count
+				cur_game_frame++;
 			}
 
 			SDL.SDL_DestroyWindow(window);
@@ -159,9 +171,7 @@ namespace CornSnake {
 			var me = this;
 
 			foreach (var i in index_render_order) {
-				var type = objects[i].GetType();
-				var render_func = type.GetMethod("onRender");
-
+				var render_func = objects[i].GetType().GetMethod("onRender");
 				render_func.Invoke(objects[i], new object[] {me});
 			}
 		}
@@ -178,12 +188,9 @@ namespace CornSnake {
 			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
 			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x, y = _y };
 			
-			unsafe {
-				SDL.SDL_Surface *sur = (SDL.SDL_Surface *) sprite.frames[index];
 
-				src_rect.w = dst_rect.h = sur->w;
-				src_rect.h = dst_rect.h = sur->h;
-			}
+			src_rect.w = dst_rect.h = sprite.getWidth();
+			src_rect.h = dst_rect.h = sprite.getHeight();
 
 			SDL.SDL_BlitSurface(sprite.frames[index], ref src_rect, this.camera_surface, ref dst_rect);
 		}
@@ -219,6 +226,14 @@ namespace CornSnake {
 			camera_surface = SDL.SDL_CreateRGBSurface(	0,
 														camera_rect.w, camera_rect.h,
 														32, 0, 0, 0, 0);
+		}
+
+		public int cameraGetWidth() {
+			return this.camera_rect.w;
+		}
+
+		public int cameraGetHeight() {
+			return this.camera_rect.h;
 		}
 	}
 }
