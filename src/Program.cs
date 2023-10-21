@@ -3,9 +3,13 @@
 using System;
 using CornSnake;
 
+// TEMPORARY
+using SDL2;
+
 namespace Program {
 	public class ObjTest : CornSnake.Object {
-		public int foo;
+		int walk_speed = 2;
+		int hspd = 0, vspd = 0;
 		
 		public void onCreate(ref Game game) {
 			Console.WriteLine("This is working");
@@ -14,10 +18,18 @@ namespace Program {
 		}
 
 		public void onUpdate(ref Game game) {
-			this.x++;
+			// Input
+			bool right	= game.input.keyboardIsHeld(CornSnake.Keyboard.KEY_RIGHT);
+			bool left	= game.input.keyboardIsHeld(CornSnake.Keyboard.KEY_LEFT);
 			
-			if (this.x > game.cameraGetWidth())
-				this.x = -sprite.getWidth();
+			// Find the direction along the x axis
+			int dir_x = Convert.ToInt32(right) - Convert.ToInt32(left);
+			
+			// Find hspd
+			hspd = walk_speed * dir_x;
+
+			// Add hspd to x
+			this.x += hspd;
 		}
 	}
 

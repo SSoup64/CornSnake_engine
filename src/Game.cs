@@ -28,12 +28,16 @@ namespace CornSnake {
 
 		private uint cur_game_frame = 0;
 		
+		// Input handling
+		public Input input;
+
 		// Constructor
 		public Game(uint fps) {
 			this.fps = fps;
 
 			objects				= new List<object>();
 			index_render_order	= new List<int>();
+			input				= new Input();
 		}
 		
 		// Init function
@@ -86,6 +90,8 @@ namespace CornSnake {
 			uint frame_delay = 1000/this.fps;
 			var me = this;
 
+			int a;
+
 			// Enter the loop
 			while (!end) {
 				// Get the start time of the frame
@@ -99,9 +105,11 @@ namespace CornSnake {
 							break;
 					}
 				}
+
+				// Update the input
+				input.update();
 				
 				// Run the update function on all the objects
-
 				foreach (var i in index_render_order) {
 					var update_func = objects[i].GetType().GetMethod("onUpdate");
 					update_func.Invoke(objects[i], new object[] {me});
