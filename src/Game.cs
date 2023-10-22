@@ -90,8 +90,6 @@ namespace CornSnake {
 			uint frame_delay = 1000/this.fps;
 			var me = this;
 
-			int a;
-
 			// Enter the loop
 			while (!end) {
 				// Get the start time of the frame
@@ -210,7 +208,7 @@ namespace CornSnake {
 		// }
 
 		// Functions that deal with objects
-		public void newObject<T>(int x, int y) where T : Object, new() {
+		public void instanceCreate<T>(int x, int y) where T : Object, new() {
 			var me = this;
 
 			T obj = new T();
@@ -220,7 +218,27 @@ namespace CornSnake {
 			obj.x = x;
 			obj.y = y;
 
-			objects.Add((Object) obj);
+			objects.Add(obj);
+		}
+
+		// This function finds and returns a refrence to the index-th object of type T where the objects are numbered from newest to oldest
+		public ref object instanceFindIndex<T>(int index) {
+			int found = -1;
+			int ind = 0;
+
+			foreach (var i in this.objects) {
+				if (typeof(T) == i.GetType())
+					found++;
+				
+				if (found == index) {
+					var listSpan = CollectionsMarshal.AsSpan(objects);
+					return ref listSpan[ind];
+				}
+
+				ind++;
+			}
+
+			throw new Exception("Tried to find an object with an invalid index.");
 		}
 	
 		// Functions that deal with the camera

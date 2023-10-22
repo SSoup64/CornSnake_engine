@@ -29,7 +29,6 @@ namespace CornSnake {
 
 		// Constructor and destructor
 		public Object() {
-			Console.WriteLine("Created an object");
 			my_type = GetType();
 		}
 

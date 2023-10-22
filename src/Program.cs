@@ -3,33 +3,55 @@
 using System;
 using CornSnake;
 
-// TEMPORARY
-using SDL2;
-
 namespace Program {
+	public class ObjTest2 : CornSnake.Object {
+		public void onCreate(ref Game game) {
+			this.sprite = new Sprite(ref game, "./spr_test2/");
+		}
+	}
+	
 	public class ObjTest : CornSnake.Object {
-		int walk_speed = 2;
-		int hspd = 0, vspd = 0;
+		double walk_speed = 1.5;
+
+		double hspd = 0, vspd = 0;
+		double hspd_frac = 0, vspd_frac = 0;
 		
 		public void onCreate(ref Game game) {
-			Console.WriteLine("This is working");
-
 			this.sprite = new Sprite(ref game, "./spr_test/");
 		}
 
 		public void onUpdate(ref Game game) {
 			// Input
-			bool right	= game.input.keyboardIsHeld(CornSnake.Keyboard.KEY_RIGHT);
-			bool left	= game.input.keyboardIsHeld(CornSnake.Keyboard.KEY_LEFT);
+			bool right	= game.input.keyboardIsHeld(Keyboard.KEY_RIGHT);
+			bool left	= game.input.keyboardIsHeld(Keyboard.KEY_LEFT);
+			bool up		= game.input.keyboardIsHeld(Keyboard.KEY_UP);
+			bool down	= game.input.keyboardIsHeld(Keyboard.KEY_DOWN);
 			
-			// Find the direction along the x axis
+			// Find the direction along the x and y axis
 			int dir_x = Convert.ToInt32(right) - Convert.ToInt32(left);
+			int dir_y = Convert.ToInt32(down) - Convert.ToInt32(up);
 			
-			// Find hspd
+			// Calculate hspd
 			hspd = walk_speed * dir_x;
 
+			hspd		+= hspd_frac;
+			hspd_frac	= hspd - Math.Floor(Math.Abs(hspd)) * Math.Sign(hspd);
+			hspd		-= hspd_frac;
+			
+			// Calculate vspd
+			vspd = walk_speed * dir_y;
+
+			vspd		+= vspd_frac;
+			vspd_frac	= vspd - Math.Floor(Math.Abs(vspd)) * Math.Sign(vspd);
+			vspd		-= vspd_frac;
+
 			// Add hspd to x
-			this.x += hspd;
+			this.x += Convert.ToInt32(hspd);
+			this.y += Convert.ToInt32(vspd);
+
+			// Do the funny
+			ObjTest2 test = (ObjTest2) game.instanceFindIndex<ObjTest2>(0);
+			test.x += dir_x;
 		}
 	}
 
@@ -43,7 +65,8 @@ namespace Program {
 			game.cameraResize(256, 192);
 			
 			// Create objects
-			game.newObject<ObjTest>(32, 16);
+			game.instanceCreate<ObjTest>(32, 16);
+			game.instanceCreate<ObjTest2>(64, 64);
 			
 			// Run the game
 			game.run();
