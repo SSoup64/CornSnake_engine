@@ -27,6 +27,8 @@ namespace Program {
 			bool up		= game.input.keyboardIsHeld(Keyboard.KEY_UP);
 			bool down	= game.input.keyboardIsHeld(Keyboard.KEY_DOWN);
 			
+			bool space	= game.input.keyboardIsPressed(Keyboard.KEY_SPACE);
+			
 			// Find the direction along the x and y axis
 			int dir_x = Convert.ToInt32(right) - Convert.ToInt32(left);
 			int dir_y = Convert.ToInt32(down) - Convert.ToInt32(up);
@@ -50,8 +52,14 @@ namespace Program {
 			this.y += Convert.ToInt32(vspd);
 
 			// Do the funny
-			ObjTest2 test = (ObjTest2) game.instanceFindIndex<ObjTest2>(0);
-			test.x += dir_x;
+			if (space) {
+				ObjTest2 test = (ObjTest2) game.instanceFindIndex<ObjTest2>(0);
+				game.instanceDestroy(test.obj_id);
+			}
+
+			// Console.WriteLine(game.instanceExists(test));
+
+			// test.x += dir_x;
 		}
 	}
 

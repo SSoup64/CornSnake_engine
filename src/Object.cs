@@ -6,6 +6,10 @@ using SDL2;
 namespace CornSnake {
 	public class Object {
 		// Attributes
+		
+		// TODO: Make obj_id not overrideable
+		public uint				obj_id;					// The ID of the object in question
+
 		public System.Type		my_type;				// The type to cast the object to
 
 		public int				x = 0,					// X position

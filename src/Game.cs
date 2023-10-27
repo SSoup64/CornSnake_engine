@@ -8,6 +8,7 @@ namespace CornSnake {
 		// Attributes
 		private List<object>	objects;
 		private List<int>		index_render_order;
+		private uint			cur_obj_id;
 			
 		private int window_width, window_height;
 		private IntPtr window;
@@ -38,6 +39,7 @@ namespace CornSnake {
 			objects				= new List<object>();
 			index_render_order	= new List<int>();
 			input				= new Input();
+			cur_obj_id			= 0;
 		}
 		
 		// Init function
@@ -108,7 +110,12 @@ namespace CornSnake {
 				input.update();
 				
 				// Run the update function on all the objects
-				foreach (var i in index_render_order) {
+				for (int i = 0; i < objects.Count; i++) {
+					if (objects[i] == null) {
+						objects.RemoveAt(i);
+						break;
+					}
+
 					var update_func = objects[i].GetType().GetMethod("onUpdate");
 					update_func.Invoke(objects[i], new object[] {me});
 				}
@@ -211,14 +218,18 @@ namespace CornSnake {
 		public void instanceCreate<T>(int x, int y) where T : Object, new() {
 			var me = this;
 
+			// T obj = (T) Activator.CreateInstance(typeof(T), 1);
 			T obj = new T();
 
 			((dynamic) obj).onCreate(ref me);
+			((dynamic) obj).obj_id = cur_obj_id;
 
 			obj.x = x;
 			obj.y = y;
 
 			objects.Add(obj);
+
+			cur_obj_id++;
 		}
 
 		// This function finds and returns a refrence to the index-th object of type T where the objects are numbered from newest to oldest
@@ -239,6 +250,20 @@ namespace CornSnake {
 			}
 
 			throw new Exception("Tried to find an object with an invalid index.");
+		}
+
+		public bool instanceExists(Object obj) {
+			return (obj != null);
+		}
+
+		public void instanceDestroy(uint obj_id) {
+			if (rendering)
+				throw new Exception("Tried to destroy an object while rendering");
+
+			for (int i = 0; i < objects.Count; i++) {
+				if (((dynamic) objects[i]).obj_id == obj_id)
+					objects[i] = null;
+			}
 		}
 	
 		// Functions that deal with the camera
