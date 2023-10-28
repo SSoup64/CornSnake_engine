@@ -21,6 +21,7 @@ namespace CornSnake {
 		SDL.SDL_Rect camera_rect;
 		private IntPtr camera_surface;
 		private IntPtr camera_tex;
+		int camera_x, camera_y;
 
 		private bool initialized = false;
 		private bool rendering = false;
@@ -40,6 +41,8 @@ namespace CornSnake {
 			index_render_order	= new List<int>();
 			input				= new Input();
 			cur_obj_id			= 0;
+
+			camera_x = camera_y = 0;
 		}
 		
 		// Init function
@@ -199,7 +202,7 @@ namespace CornSnake {
 		
 		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
 			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
-			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x, y = _y };
+			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x - this.camera_x - sprite.getOrgX(), y = _y - this.camera_y - sprite.getOrgY() };
 			
 
 			src_rect.w = dst_rect.h = sprite.getWidth();
@@ -285,6 +288,19 @@ namespace CornSnake {
 
 		public int cameraGetHeight() {
 			return this.camera_rect.h;
+		}
+
+		public void cameraSetPos(int x, int y) {
+			this.camera_x = x;
+			this.camera_y = y;
+		}
+
+		public void cameraSetX(int x) {
+			this.camera_x = x;
+		}
+
+		public void cameraSetY(int y) {
+			this.camera_y = y;
 		}
 	}
 }

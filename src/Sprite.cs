@@ -6,7 +6,9 @@ namespace CornSnake {
 	public class Sprite {
 		public List<IntPtr> frames = new List<IntPtr>();
 		private int width = 0, height = 0;
+		private int org_x = 0, org_y = 0;
 
+		// TODO: Create a file format that tells the game where is the sprite origin point and how many frames there are.
 		public Sprite(ref Game game, string folder_path) {
 			// Throw an error if the directory does not exist
 			if (!Directory.Exists(folder_path))
@@ -30,6 +32,10 @@ namespace CornSnake {
 				this.width	= sur->w;
 				this.height	= sur->h;
 			}
+
+			// Set the origin to be the middle center of the sprite
+			this.org_x = this.width/2;
+			this.org_y = this.height/2;
 		}
 
 		public int getWidth() {
@@ -38,6 +44,14 @@ namespace CornSnake {
 
 		public int getHeight() {
 			return height;
+		}
+
+		public int getOrgX() {
+			return org_x;
+		}
+
+		public int getOrgY() {
+			return org_y;
 		}
 	}
 }

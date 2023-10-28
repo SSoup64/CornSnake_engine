@@ -56,6 +56,12 @@ namespace Program {
 				ObjTest2 test = (ObjTest2) game.instanceFindIndex<ObjTest2>(0);
 				game.instanceDestroy(test.obj_id);
 			}
+			
+			// Set camera position
+			int camera_x = Math.Max(0, this.x - game.cameraGetWidth()/2);
+			int camera_y = Math.Max(0, this.y - game.cameraGetHeight()/2);
+
+			game.cameraSetPos(camera_x, camera_y);
 
 			// Console.WriteLine(game.instanceExists(test));
 
