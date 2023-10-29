@@ -23,12 +23,21 @@ namespace CornSnake {
 														// These objects may only be created at before the game runs.
 
 		// Events
+		// Create
 		public void onCreate(ref Game game)		{}
-		public void onUpdate(ref Game game)		{}
+		
+		// Destroy
 		public void onDestroy(ref Game game)	{}
 		
+		// Update
+		public void beforeUpdate(ref Game game)	{}
+		public void onUpdate(ref Game game)		{}
+		public void afterUpdate(ref Game game)	{}
+		
+		// Render
 		public void onRender(ref Game game)	 {
-			renderDrawSelf(ref game);
+			if (!Object.Equals(sprite, default(Sprite)))
+				renderDrawSelf(ref game);
 		}
 
 		// Constructor and destructor

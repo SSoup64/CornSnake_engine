@@ -4,23 +4,17 @@ using System;
 using CornSnake;
 
 namespace Program {
-	public class ObjTest2 : CornSnake.Object {
-		public void onCreate(ref Game game) {
-			this.sprite = new Sprite(ref game, "./spr_test2/");
-		}
-	}
-	
-	public class ObjTest : CornSnake.Object {
+	public class ObjPlayer : CornSnake.Object {
 		double walk_speed = 1.5;
 
 		double hspd = 0, vspd = 0;
 		double hspd_frac = 0, vspd_frac = 0;
 		
-		public void onCreate(ref Game game) {
+		public new void onCreate(ref Game game) {
 			this.sprite = new Sprite(ref game, "./spr_test/");
 		}
 
-		public void onUpdate(ref Game game) {
+		public new void onUpdate(ref Game game) {
 			// Input
 			bool right	= game.input.keyboardIsHeld(Keyboard.KEY_RIGHT);
 			bool left	= game.input.keyboardIsHeld(Keyboard.KEY_LEFT);
@@ -51,21 +45,33 @@ namespace Program {
 			this.x += Convert.ToInt32(hspd);
 			this.y += Convert.ToInt32(vspd);
 
-			// Do the funny
-			if (space) {
-				ObjTest2 test = (ObjTest2) game.instanceFindIndex<ObjTest2>(0);
-				game.instanceDestroy(test.obj_id);
-			}
-			
-			// Set camera position
-			int camera_x = Math.Max(0, this.x - game.cameraGetWidth()/2);
-			int camera_y = Math.Max(0, this.y - game.cameraGetHeight()/2);
-
-			game.cameraSetPos(camera_x, camera_y);
 
 			// Console.WriteLine(game.instanceExists(test));
+		}
+	}
 
-			// test.x += dir_x;
+	class ObjCamera : CornSnake.Object {
+		CornSnake.Object follow;
+		int smoothness = 4;
+
+		public new void onCreate(ref Game game) {
+			follow = (CornSnake.Object) game.instanceFind<ObjPlayer>();
+
+			this.x = game.cameraGetX();
+			this.y = game.cameraGetY();
+		}
+
+		public new void onUpdate(ref Game game) {
+			// Calculate the camera_x_to and camera_y_to variables 
+			int camera_x_to = Math.Max(0, follow.x - game.cameraGetWidth()/2);
+			int camera_y_to = Math.Max(0, follow.y - game.cameraGetHeight()/2);
+			
+			// Calculate new X and Y
+			this.x += (camera_x_to - game.cameraGetX())/this.smoothness;
+			this.y += (camera_y_to - game.cameraGetY())/this.smoothness;
+			
+			// Set the camera's position
+			game.cameraSetPos(this.x, this.y);
 		}
 	}
 
@@ -79,8 +85,8 @@ namespace Program {
 			game.cameraResize(256, 192);
 			
 			// Create objects
-			game.instanceCreate<ObjTest>(32, 16);
-			game.instanceCreate<ObjTest2>(64, 64);
+			game.instanceCreate<ObjPlayer>(16, 16);
+			game.instanceCreate<ObjCamera>(0, 0);
 			
 			// Run the game
 			game.run();

@@ -112,7 +112,18 @@ namespace CornSnake {
 				// Update the input
 				input.update();
 				
-				// Run the update function on all the objects
+				// Run the beforeUpdate function on all the objects
+				for (int i = 0; i < objects.Count; i++) {
+					if (objects[i] == null) {
+						objects.RemoveAt(i);
+						break;
+					}
+
+					var update_func = objects[i].GetType().GetMethod("beforeUpdate");
+					update_func.Invoke(objects[i], new object[] {me});
+				}
+
+				// Run the onUpdate function on all the objects
 				for (int i = 0; i < objects.Count; i++) {
 					if (objects[i] == null) {
 						objects.RemoveAt(i);
@@ -120,6 +131,17 @@ namespace CornSnake {
 					}
 
 					var update_func = objects[i].GetType().GetMethod("onUpdate");
+					update_func.Invoke(objects[i], new object[] {me});
+				}
+
+				// Run the afterUpdate function on all the objects
+				for (int i = 0; i < objects.Count; i++) {
+					if (objects[i] == null) {
+						objects.RemoveAt(i);
+						break;
+					}
+
+					var update_func = objects[i].GetType().GetMethod("afterUpdate");
 					update_func.Invoke(objects[i], new object[] {me});
 				}
 				
@@ -236,7 +258,7 @@ namespace CornSnake {
 		}
 
 		// This function finds and returns a refrence to the index-th object of type T where the objects are numbered from newest to oldest
-		public ref object instanceFindIndex<T>(int index) {
+		public ref object instanceFind<T>(int index = 0) {
 			int found = -1;
 			int ind = 0;
 
@@ -301,6 +323,14 @@ namespace CornSnake {
 
 		public void cameraSetY(int y) {
 			this.camera_y = y;
+		}
+
+		public int cameraGetX() {
+			return this.camera_x;
+		}
+
+		public int cameraGetY() {
+			return this.camera_y;
 		}
 	}
 }

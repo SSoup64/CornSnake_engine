@@ -5,8 +5,11 @@ using SDL2;
 namespace CornSnake {
 	public class Sprite {
 		public List<IntPtr> frames = new List<IntPtr>();
+
 		private int width = 0, height = 0;
 		private int org_x = 0, org_y = 0;
+
+		private bool exists = false;
 
 		// TODO: Create a file format that tells the game where is the sprite origin point and how many frames there are.
 		public Sprite(ref Game game, string folder_path) {
@@ -36,6 +39,13 @@ namespace CornSnake {
 			// Set the origin to be the middle center of the sprite
 			this.org_x = this.width/2;
 			this.org_y = this.height/2;
+			
+			// Set exists to true
+			exists = true;
+		}
+
+		public bool getExists() {
+			return exists;
 		}
 
 		public int getWidth() {
