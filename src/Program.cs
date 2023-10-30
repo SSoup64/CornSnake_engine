@@ -48,6 +48,12 @@ namespace Program {
 			this.depth = -this.y;
 			// Console.WriteLine(game.instanceExists(test));
 		}
+
+		public new void onRender(ref Game game) {
+			game.renderSetColor(120, 120, 120);
+			game.renderDrawRect(0, 0, 100, 100);
+			this.renderDrawSelf(ref game);
+		}
 	}
 
 	class ObjTest : CornSnake.Object {

@@ -16,8 +16,9 @@ namespace CornSnake {
 		private IntPtr window;
 		
 		// Renderer variables
-		private SDL.SDL_Rect renderer_rect;
-		private IntPtr renderer;
+		private SDL.SDL_Rect	renderer_rect;
+		private IntPtr			renderer;
+		private UInt32			render_color;
 		
 		// Camera variables
 		SDL.SDL_Rect camera_rect;
@@ -99,6 +100,9 @@ namespace CornSnake {
 
 			// Create the renderer
 			renderer = SDL.SDL_CreateRenderer(window, -1, 0);
+			
+			// Set default color
+			this.renderSetColor(0, 0, 0, 0);
 
 			// Set the initialize variable to true
 			initialized = true;
@@ -223,12 +227,8 @@ namespace CornSnake {
 			if (objects.Count <= 0)
 				return;
 			
-			// index_render_order.Clear();
-			// index_render_order = Enumerable.Range(0, objects.Count).ToList();
+			// Sort the render list
 			renderListSort();
-			
-			// TODO: Sort the index_render_order list using the depth of the corresponding object.
-
 
 			// Render the objects
 			var me = this;
@@ -243,24 +243,64 @@ namespace CornSnake {
 #region Functions that deal with the rendering
 		public void renderSetColor(byte red, byte green, byte blue, byte alpha=255) {	// Sets the renderer's color
 			SDL.SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);
+
+			render_color = 0;
+
+			render_color += alpha;
+			render_color <<= 8;
+
+			render_color += red;
+			render_color <<= 8;
+
+			render_color += green;
+			render_color <<= 8;
+
+			render_color += blue;
 		}
 		
 		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
-			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
-			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x - this.camera_x - sprite.getOrgX(), y = _y - this.camera_y - sprite.getOrgY() };
+			// Check if we are in the rendering stage
+			if (!this.rendering)
+				return;
 			
+			// Create the source rectangle
+			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
+			
+			// Create the destination rectangle and convert from world coordinates to screen coordinates
+			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x - this.camera_x - sprite.getOrgX(), y = _y - this.camera_y - sprite.getOrgY() };
 
+			// Set the rectangles' width
 			src_rect.w = dst_rect.h = sprite.getWidth();
 			src_rect.h = dst_rect.h = sprite.getHeight();
-
+			
+			
+			// Blit the surface
 			SDL.SDL_BlitSurface(sprite.frames[index], ref src_rect, this.camera_surface, ref dst_rect);
 		}
 
+		public void renderDrawRect(int x1, int y1, int x2, int y2) {
+			// Check if we are currently in the rendering stage
+			if (!this.rendering)
+				return;
 
-		// TODO: Implement this later
-		//public void renderDrawRect(int x1, int y1, int x2, int y2) {
-		//
-		// }
+			// Adjust the x1, x2, y1, y2 to be screen coordinates
+			x1 -= this.camera_x;
+			x2 -= this.camera_x;
+			y1 -= this.camera_y;
+			y2 -= this.camera_y;
+			
+			// Find the top left corner of the rectangle
+			int x_rect		= Math.Min(x1, x2);
+			int y_rect		= Math.Min(y1, y2);
+			
+			// Find the width and height of the rectangle
+			int width_rect	= Math.Max(x1 - x_rect, x2 - x_rect);
+			int height_rect	= Math.Max(y1 - y_rect, y2 - y_rect);
+
+			SDL.SDL_Rect rect = new SDL.SDL_Rect() { x = x_rect, y = y_rect, w = width_rect, h = height_rect };
+			
+			SDL.SDL_FillRect(this.camera_surface, ref rect, render_color);
+		}
 #endregion
 
 #region Functions that deal with objects

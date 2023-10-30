@@ -54,7 +54,7 @@ namespace CornSnake {
 		}
 
 #region Other functions
-		private void renderDrawSelf(ref Game game) {
+		public void renderDrawSelf(ref Game game) {
 			game.renderDrawSprite(x, y, sprite, sprite_index);
 		}
 #endregion
