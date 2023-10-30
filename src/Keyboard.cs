@@ -1,6 +1,9 @@
 using SDL2;
 
 namespace CornSnake {
+	// This enum is literally just the SDL keycode enum with the SDLK changed to KEY.
+	// May god forgive me
+	
 	public enum Keyboard {
 		KEY_UNKNOWN = SDL.SDL_Keycode.SDLK_UNKNOWN,
 		KEY_RETURN = SDL.SDL_Keycode.SDLK_RETURN,

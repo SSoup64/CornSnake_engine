@@ -5,7 +5,7 @@ using SDL2;
 
 namespace CornSnake {
 	public class Object {
-		// Attributes
+#region Attributes
 		
 		// TODO: Make obj_id not overrideable
 		public uint				obj_id;					// The ID of the object in question
@@ -23,8 +23,9 @@ namespace CornSnake {
 														// These objects may only be created at before the game runs.
 
 		public int				depth = 0;				// The smaller the later it draws.
+#endregion
 
-		// Events
+#region Events
 		// Create
 		public void onCreate(ref Game game)		{}
 		
@@ -41,6 +42,7 @@ namespace CornSnake {
 			if (!Object.Equals(sprite, default(Sprite)))
 				renderDrawSelf(ref game);
 		}
+#endregion
 
 		// Constructor and destructor
 		public Object() {
@@ -51,9 +53,10 @@ namespace CornSnake {
 			sprite = null;
 		}
 
-		// Sealed functions
+#region Other functions
 		private void renderDrawSelf(ref Game game) {
 			game.renderDrawSprite(x, y, sprite, sprite_index);
 		}
+#endregion
 	}
 }

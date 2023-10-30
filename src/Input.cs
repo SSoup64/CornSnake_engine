@@ -22,6 +22,7 @@ namespace CornSnake {
 			Marshal.Copy(keyboard_array_org, keyboard_array, 0, keyboard_array_size);
 		}
 
+#region Keyboard
 		public bool keyboardIsHeld(Keyboard key) {
 			byte scancode = (byte) SDL.SDL_GetScancodeFromKey((SDL.SDL_Keycode) key);
 			return (keyboard_array[scancode] == 1);
@@ -31,5 +32,6 @@ namespace CornSnake {
 			byte scancode = (byte) SDL.SDL_GetScancodeFromKey((SDL.SDL_Keycode) key);
 			return (keyboard_array[scancode] == 1 && keyboard_array_delta[scancode] == 0);
 		}
+#endregion
 	}
 }

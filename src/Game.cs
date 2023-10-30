@@ -5,7 +5,7 @@ using SDL2;
 
 namespace CornSnake {
 	public class Game {
-		// Attributes
+#region Attributes
 		private List<object>	objects;
 		private List<object>	objects_render;
 		private uint			cur_obj_id;
@@ -34,6 +34,7 @@ namespace CornSnake {
 		
 		// Input handling
 		public Input input;
+#endregion
 
 		// Constructor
 		public Game(uint fps) {
@@ -50,7 +51,8 @@ namespace CornSnake {
 			camera_x = camera_y = 0;
 		}
 
-		// Helper functions
+		// I don't really know how to call these functions.
+		// Guess I could call them 'functions that should never be called by objects'
 		private void renderListSort() {
 		    for (int i = 1; i < objects_render.Count; i++) {
 				var key = objects_render[i];
@@ -238,9 +240,7 @@ namespace CornSnake {
 		}
 
 
-
-		// Other functions
-		// Functions that deal with the rendering
+#region Functions that deal with the rendering
 		public void renderSetColor(byte red, byte green, byte blue, byte alpha=255) {	// Sets the renderer's color
 			SDL.SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);
 		}
@@ -261,8 +261,9 @@ namespace CornSnake {
 		//public void renderDrawRect(int x1, int y1, int x2, int y2) {
 		//
 		// }
+#endregion
 
-		// Functions that deal with objects
+#region Functions that deal with objects
 		public void instanceCreate<T>(int x, int y) where T : Object, new() {
 			var me = this;
 
@@ -314,8 +315,9 @@ namespace CornSnake {
 					objects[i] = null;
 			}
 		}
-	
-		// Functions that deal with the camera
+#endregion
+
+#region Functions that deal with the camera
 		public void cameraResize(int w, int h) {
 			this.camera_rect.w = w;
 			this.camera_rect.h = h;
@@ -356,8 +358,9 @@ namespace CornSnake {
 		public int cameraGetY() {
 			return this.camera_y;
 		}
+#endregion
 
-		// Functions that deal with sprites
+#region Functions that deal with sprites
 		public void spriteLoad(string name) {
 			var me = this;
 			sprites.Add(name, new Sprite(ref me, $"./Sprites/{name}"));
@@ -369,6 +372,7 @@ namespace CornSnake {
 
 			return sprites[name];
 		}
+#endregion
 	}
 }
 
