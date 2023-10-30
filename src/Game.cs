@@ -7,9 +7,11 @@ namespace CornSnake {
 	public class Game {
 		// Attributes
 		private List<object>	objects;
-		private List<int>		index_render_order;
+		private List<object>	objects_render;
 		private uint			cur_obj_id;
-			
+
+		private IDictionary<string, Sprite>	sprites;
+		
 		private int window_width, window_height;
 		private IntPtr window;
 		
@@ -38,11 +40,31 @@ namespace CornSnake {
 			this.fps = fps;
 
 			objects				= new List<object>();
-			index_render_order	= new List<int>();
+			objects_render		= new List<object>();
+
+			sprites				= new Dictionary<string, Sprite>();
+
 			input				= new Input();
 			cur_obj_id			= 0;
 
 			camera_x = camera_y = 0;
+		}
+
+		// Helper functions
+		private void renderListSort() {
+		    for (int i = 1; i < objects_render.Count; i++) {
+				var key = objects_render[i];
+				var flag = 0;
+
+				for (int j = i - 1; j >= 0 && flag != 1;) {
+					if (((dynamic) key).depth > ((dynamic) objects_render[j]).depth) {
+						objects_render[j + 1] = objects_render[j];
+						j--;
+						objects_render[j + 1] = key;
+					} else
+						flag = 1;
+				}
+			}
 		}
 		
 		// Init function
@@ -199,8 +221,9 @@ namespace CornSnake {
 			if (objects.Count <= 0)
 				return;
 			
-			index_render_order.Clear();
-			index_render_order = Enumerable.Range(0, objects.Count).ToList();
+			// index_render_order.Clear();
+			// index_render_order = Enumerable.Range(0, objects.Count).ToList();
+			renderListSort();
 			
 			// TODO: Sort the index_render_order list using the depth of the corresponding object.
 
@@ -208,9 +231,9 @@ namespace CornSnake {
 			// Render the objects
 			var me = this;
 
-			foreach (var i in index_render_order) {
-				var render_func = objects[i].GetType().GetMethod("onRender");
-				render_func.Invoke(objects[i], new object[] {me});
+			foreach (var i in objects_render) {
+				var render_func = i.GetType().GetMethod("onRender");
+				render_func.Invoke(i, new object[] {me});
 			}
 		}
 
@@ -253,6 +276,7 @@ namespace CornSnake {
 			obj.y = y;
 
 			objects.Add(obj);
+			objects_render.Add(objects[objects.Count - 1]);
 
 			cur_obj_id++;
 		}
@@ -331,6 +355,19 @@ namespace CornSnake {
 
 		public int cameraGetY() {
 			return this.camera_y;
+		}
+
+		// Functions that deal with sprites
+		public void spriteLoad(string name) {
+			var me = this;
+			sprites.Add(name, new Sprite(ref me, $"./Sprites/{name}"));
+		}
+
+		public Sprite spriteGet(string name) {
+			if (!sprites.ContainsKey(name))
+				throw new Exception("Tried to get a sprite that is not loaded.");
+
+			return sprites[name];
 		}
 	}
 }

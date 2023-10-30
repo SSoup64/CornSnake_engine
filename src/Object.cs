@@ -22,6 +22,8 @@ namespace CornSnake {
 		public bool				is_global = false;		// If set to true, the object won't be deleted when going between rooms.
 														// These objects may only be created at before the game runs.
 
+		public int				depth = 0;				// The smaller the later it draws.
+
 		// Events
 		// Create
 		public void onCreate(ref Game game)		{}

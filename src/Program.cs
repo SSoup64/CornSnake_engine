@@ -11,7 +11,7 @@ namespace Program {
 		double hspd_frac = 0, vspd_frac = 0;
 		
 		public new void onCreate(ref Game game) {
-			this.sprite = new Sprite(ref game, "./spr_test/");
+			this.sprite = game.spriteGet("spr_test");
 		}
 
 		public new void onUpdate(ref Game game) {
@@ -45,8 +45,18 @@ namespace Program {
 			this.x += Convert.ToInt32(hspd);
 			this.y += Convert.ToInt32(vspd);
 
-
+			this.depth = -this.y;
 			// Console.WriteLine(game.instanceExists(test));
+		}
+	}
+
+	class ObjTest : CornSnake.Object {
+		public new void onCreate(ref Game game) {
+			this.sprite = game.spriteGet("spr_test2");
+		}
+
+		public new void onUpdate(ref Game game) {
+			this.depth = -this.y;
 		}
 	}
 
@@ -82,12 +92,18 @@ namespace Program {
 			
 			// Initialize the game and set camera size
 			game.init(1024, 768);
-			game.cameraResize(256, 192);
+
+			// Load sprites
+			game.spriteLoad("spr_test");
+			game.spriteLoad("spr_test2");
 			
 			// Create objects
+			game.instanceCreate<ObjTest>(64, 32);
 			game.instanceCreate<ObjPlayer>(16, 16);
 			game.instanceCreate<ObjCamera>(0, 0);
 			
+			game.cameraResize(256, 192);
+
 			// Run the game
 			game.run();
 		}
