@@ -1,16 +1,14 @@
 using System;
 using System.IO;
-using SDL2;
+using Raylib_cs;
 
 namespace CornSnake {
 	public class Sprite {
 #region Attributes
-		public List<IntPtr> frames = new List<IntPtr>();
+		public List<Image> frames = new List<Image>();
 
 		private int width = 0, height = 0;
 		private int org_x = 0, org_y = 0;
-
-		private bool exists = false;
 #endregion
 		
 		// Constructor
@@ -24,7 +22,7 @@ namespace CornSnake {
 			int i;
 			
 			for (i = 0; File.Exists($"{folder_path}/img_{i}.png"); i++) {
-				frames.Add(SDL_image.IMG_Load($"{folder_path}/img_{i}.png"));
+				frames.Add(Raylib.LoadImage($"{folder_path}/img_{i}.png"));
 			}
 			
 			// Throw an error if the initial frame was not loaded
@@ -32,26 +30,15 @@ namespace CornSnake {
 				throw new Exception($"Could not find the intial frame in {folder_path}");
 
 			// Calculate sprite dimensions
-			unsafe {
-				SDL.SDL_Surface *sur = (SDL.SDL_Surface *) this.frames[0]; 
-
-				this.width	= sur->w;
-				this.height	= sur->h;
-			}
+			this.width	= frames[0].Width;
+			this.height	= frames[0].Height;
 
 			// Set the origin to be the middle center of the sprite
 			this.org_x = this.width/2;
 			this.org_y = this.height/2;
-			
-			// Set exists to true
-			exists = true;
 		}
 
 #region Other functions
-		public bool getExists() {
-			return exists;
-		}
-
 		public int getWidth() {
 			return width;
 		}

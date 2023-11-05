@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using SDL2;
+using Raylib_cs;
 
 namespace CornSnake {
 	public class Game {
@@ -12,24 +12,18 @@ namespace CornSnake {
 
 		private IDictionary<string, Sprite>	sprites;
 		
+		// Window dimensions
 		private int window_width, window_height;
-		private IntPtr window;
-		
-		// Renderer variables
-		private SDL.SDL_Rect	renderer_rect;
-		private IntPtr			renderer;
-		private UInt32			render_color;
 		
 		// Camera variables
-		SDL.SDL_Rect camera_rect;
-		private IntPtr camera_surface;
-		private IntPtr camera_tex;
 		int camera_x, camera_y;
 
 		private bool initialized = false;
 		private bool rendering = false;
+		private bool running = false;
 
-		private uint fps = 60;
+		// Render variables
+		private Color render_color;
 
 		private uint cur_game_frame = 0;
 		
@@ -38,9 +32,7 @@ namespace CornSnake {
 #endregion
 
 		// Constructor
-		public Game(uint fps) {
-			this.fps = fps;
-
+		public Game() {
 			objects				= new List<object>();
 			objects_render		= new List<object>();
 
@@ -71,41 +63,28 @@ namespace CornSnake {
 		}
 		
 		// Init function
-		public void init(int window_width, int window_height) {
+		public void init(int window_width, int window_height, string title, int fps) {
 			// Set window height and width
 			this.window_width	= window_width;
 			this.window_height	= window_height;
 
-			renderer_rect	= new SDL.SDL_Rect() { x = 0, y = 0, w = window_width, h = window_height };
-			camera_rect		= new SDL.SDL_Rect() { x = 0, y = 0, w = window_width, h = window_height };
-
-			// Initialize SDL2
-			if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
-				throw new Exception("SDL could not be initialized");
-			
-			// Initialize SDL2_Image
-			if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
-				throw new Exception("SDL image could not be initialized");
-			
 			// Create the window
-			window = SDL.SDL_CreateWindow(	"Title",	
-											SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED,
-											window_width, window_height,
-											0);
-			
-			// Create camera surface
-			camera_surface = SDL.SDL_CreateRGBSurface(	0,
-														camera_rect.w, camera_rect.h,
-														32, 0, 0, 0, 0);
-
-			// Create the renderer
-			renderer = SDL.SDL_CreateRenderer(window, -1, 0);
+			Raylib.InitWindow(window_width, window_height, title);
 			
 			// Set default color
 			this.renderSetColor(0, 0, 0, 0);
 
+			// Set target FPS
+			Raylib.SetTargetFPS(fps);
+
+			// Set the exit key to no key
+			Raylib.SetExitKey(KeyboardKey.KEY_NULL);
+
 			// Set the initialize variable to true
 			initialized = true;
+
+			// Set running to true
+			running = true;
 		}
 
 		// Run function
@@ -115,31 +94,10 @@ namespace CornSnake {
 				throw new Exception("Game object was not initialized.");
 			
 			// Variable decleration
-			bool end = false;
-			SDL.SDL_Event ev;
-
-			UInt32 frame_start;
-			uint frame_time;
-			uint frame_delay = 1000/this.fps;
 			var me = this;
 
 			// Enter the loop
-			while (!end) {
-				// Get the start time of the frame
-				frame_start = SDL.SDL_GetTicks();
-				
-				// Poll the events
-				while (SDL.SDL_PollEvent(out ev) != 0) {
-					switch (ev.type) {
-						case SDL.SDL_EventType.SDL_QUIT:
-							end = true;
-							break;
-					}
-				}
-
-				// Update the input
-				input.update();
-				
+			while (running) {
 				// Run the beforeUpdate function on all the objects
 				for (int i = 0; i < objects.Count; i++) {
 					if (objects[i] == null) {
@@ -173,51 +131,36 @@ namespace CornSnake {
 					update_func.Invoke(objects[i], new object[] {me});
 				}
 				
-				// Clear the renderer
-				SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-				SDL.SDL_RenderClear(this.renderer);
+				// Begin drawing
+				Raylib.BeginDrawing();
 
 				// Render
-				SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-				SDL.SDL_RenderDrawLine(renderer, 0, 0, 100, 100);
 				this.render();
-
-				// Present the renderer
-				SDL.SDL_RenderPresent(this.renderer);
 				
-				// Find out how much to delay in order to get a consistant fps
-				frame_time = SDL.SDL_GetTicks() - frame_start;
-
-				if (frame_time < frame_delay)
-					SDL.SDL_Delay(frame_delay - frame_time);
-
+				// End drawing
+				Raylib.EndDrawing();
+				
 				// Increment frame count
 				cur_game_frame++;
+
+				// Check if the window should close
+				if (Raylib.WindowShouldClose())
+					running = false;
 			}
-
-			SDL.SDL_DestroyWindow(window);
-
-			SDL.SDL_Quit();
+			
+			Raylib.CloseWindow();
 		}
 
 		// Render function
 		private void render() {
 			this.rendering = true;
 
-			// Clear the screen
-			SDL.SDL_FillRect(this.camera_surface, ref camera_rect, 0x00000000);
+			// Clear the renderer
+			Raylib.ClearBackground(Color.BLACK);
 			
 			// Render the objects
 			this.renderObjects();
-
-			// Make the surface into a texture
-			this.camera_tex = SDL.SDL_CreateTextureFromSurface(this.renderer, this.camera_surface);
-
-			// Copy to the renderer
-			SDL.SDL_RenderCopy(this.renderer, this.camera_tex, ref camera_rect, ref renderer_rect);
 			
-			SDL.SDL_DestroyTexture(this.camera_tex);
-
 			this.rendering = false;
 		}
 		
@@ -242,64 +185,14 @@ namespace CornSnake {
 
 #region Functions that deal with the rendering
 		public void renderSetColor(byte red, byte green, byte blue, byte alpha=255) {	// Sets the renderer's color
-			SDL.SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);
-
-			render_color = 0;
-
-			render_color += alpha;
-			render_color <<= 8;
-
-			render_color += red;
-			render_color <<= 8;
-
-			render_color += green;
-			render_color <<= 8;
-
-			render_color += blue;
+			render_color = new Color(red, green, blue, alpha);
 		}
+	
 		
 		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
-			// Check if we are in the rendering stage
-			if (!this.rendering)
-				return;
-			
-			// Create the source rectangle
-			SDL.SDL_Rect src_rect = new SDL.SDL_Rect() { x = 0, y = 0 };
-			
-			// Create the destination rectangle and convert from world coordinates to screen coordinates
-			SDL.SDL_Rect dst_rect = new SDL.SDL_Rect() { x = _x - this.camera_x - sprite.getOrgX(), y = _y - this.camera_y - sprite.getOrgY() };
-
-			// Set the rectangles' width
-			src_rect.w = dst_rect.h = sprite.getWidth();
-			src_rect.h = dst_rect.h = sprite.getHeight();
-			
-			
-			// Blit the surface
-			SDL.SDL_BlitSurface(sprite.frames[index], ref src_rect, this.camera_surface, ref dst_rect);
 		}
 
 		public void renderDrawRect(int x1, int y1, int x2, int y2) {
-			// Check if we are currently in the rendering stage
-			if (!this.rendering)
-				return;
-
-			// Adjust the x1, x2, y1, y2 to be screen coordinates
-			x1 -= this.camera_x;
-			x2 -= this.camera_x;
-			y1 -= this.camera_y;
-			y2 -= this.camera_y;
-			
-			// Find the top left corner of the rectangle
-			int x_rect		= Math.Min(x1, x2);
-			int y_rect		= Math.Min(y1, y2);
-			
-			// Find the width and height of the rectangle
-			int width_rect	= Math.Max(x1 - x_rect, x2 - x_rect);
-			int height_rect	= Math.Max(y1 - y_rect, y2 - y_rect);
-
-			SDL.SDL_Rect rect = new SDL.SDL_Rect() { x = x_rect, y = y_rect, w = width_rect, h = height_rect };
-			
-			SDL.SDL_FillRect(this.camera_surface, ref rect, render_color);
 		}
 #endregion
 
@@ -358,6 +251,7 @@ namespace CornSnake {
 #endregion
 
 #region Functions that deal with the camera
+		/*
 		public void cameraResize(int w, int h) {
 			this.camera_rect.w = w;
 			this.camera_rect.h = h;
@@ -398,6 +292,7 @@ namespace CornSnake {
 		public int cameraGetY() {
 			return this.camera_y;
 		}
+		*/
 #endregion
 
 #region Functions that deal with sprites

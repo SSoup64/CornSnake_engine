@@ -4,6 +4,14 @@ using System;
 using CornSnake;
 
 namespace Program {
+	public static class Global {
+		public static int a = 2;
+
+		public static void printSquare(int foo) {
+			Console.WriteLine(foo * foo);
+		}
+	}
+
 	public class ObjPlayer : CornSnake.Object {
 		double walk_speed = 1.5;
 
@@ -16,12 +24,12 @@ namespace Program {
 
 		public new void onUpdate(ref Game game) {
 			// Input
-			bool right	= game.input.keyboardIsHeld(Keyboard.KEY_RIGHT);
-			bool left	= game.input.keyboardIsHeld(Keyboard.KEY_LEFT);
-			bool up		= game.input.keyboardIsHeld(Keyboard.KEY_UP);
-			bool down	= game.input.keyboardIsHeld(Keyboard.KEY_DOWN);
+			bool right	= game.input.keyboardIsHeld(Keyboard.RIGHT);
+			bool left	= game.input.keyboardIsHeld(Keyboard.LEFT);
+			bool up		= game.input.keyboardIsHeld(Keyboard.UP);
+			bool down	= game.input.keyboardIsHeld(Keyboard.DOWN);
 			
-			bool space	= game.input.keyboardIsPressed(Keyboard.KEY_SPACE);
+			bool space	= game.input.keyboardIsPressed(Keyboard.SPACE);
 			
 			// Find the direction along the x and y axis
 			int dir_x = Convert.ToInt32(right) - Convert.ToInt32(left);
@@ -65,7 +73,8 @@ namespace Program {
 			this.depth = -this.y;
 		}
 	}
-
+	
+	/*
 	class ObjCamera : CornSnake.Object {
 		CornSnake.Object follow;
 		int smoothness = 4;
@@ -90,14 +99,15 @@ namespace Program {
 			game.cameraSetPos(this.x, this.y);
 		}
 	}
+	*/
 
 	class Program {
 		static void Main(string[] args) {
 			// Create game object and initialize it.
-			CornSnake.Game game = new CornSnake.Game(60);
+			CornSnake.Game game = new CornSnake.Game();
 			
 			// Initialize the game and set camera size
-			game.init(1024, 768);
+			game.init(1024, 768, "Game", 60);
 
 			// Load sprites
 			game.spriteLoad("spr_test");
@@ -106,9 +116,9 @@ namespace Program {
 			// Create objects
 			game.instanceCreate<ObjTest>(64, 32);
 			game.instanceCreate<ObjPlayer>(16, 16);
-			game.instanceCreate<ObjCamera>(0, 0);
+			// game.instanceCreate<ObjCamera>(0, 0);
 			
-			game.cameraResize(256, 192);
+			// game.cameraResize(256, 192);
 
 			// Run the game
 			game.run();
