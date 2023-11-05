@@ -5,7 +5,7 @@ using Raylib_cs;
 namespace CornSnake {
 	public class Sprite {
 #region Attributes
-		public List<Image> frames = new List<Image>();
+		public List<Texture2D> frames = new List<Texture2D>();
 
 		private int width = 0, height = 0;
 		private int org_x = 0, org_y = 0;
@@ -22,7 +22,7 @@ namespace CornSnake {
 			int i;
 			
 			for (i = 0; File.Exists($"{folder_path}/img_{i}.png"); i++) {
-				frames.Add(Raylib.LoadImage($"{folder_path}/img_{i}.png"));
+				frames.Add(Raylib.LoadTexture($"{folder_path}/img_{i}.png"));
 			}
 			
 			// Throw an error if the initial frame was not loaded
@@ -36,6 +36,7 @@ namespace CornSnake {
 			// Set the origin to be the middle center of the sprite
 			this.org_x = this.width/2;
 			this.org_y = this.height/2;
+			// this.org_x = this.org_y = 0;
 		}
 
 #region Other functions

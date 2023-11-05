@@ -55,6 +55,9 @@ namespace Program {
 
 			this.depth = -this.y;
 			// Console.WriteLine(game.instanceExists(test));
+			
+			x_scale = (float) Math.Sin((float) game.getCurFrame() * Math.PI/180);
+			x_scale *= 2;
 		}
 
 		public new void onRender(ref Game game) {

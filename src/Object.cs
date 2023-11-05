@@ -14,6 +14,11 @@ namespace CornSnake {
 
 		public int				x = 0,					// X position
 								y = 0;					// Y position
+
+		public float			x_scale = 1,			// How much to scale the sprite across the x direction
+								y_scale = 1;			// How much to scale the sprite across the y direction
+
+		public float			rotation = 0;			// The rotation of the sprite;
 		
 		public int				sprite_index = 0;
 
@@ -55,7 +60,7 @@ namespace CornSnake {
 
 #region Other functions
 		public void renderDrawSelf(ref Game game) {
-			game.renderDrawSprite(x, y, sprite, sprite_index);
+			game.renderDrawSprite(x, y, sprite, sprite_index, x_scale, y_scale, rotation);
 		}
 #endregion
 	}

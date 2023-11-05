@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Raylib_cs;
@@ -25,7 +26,7 @@ namespace CornSnake {
 		// Render variables
 		private Color render_color;
 
-		private uint cur_game_frame = 0;
+		private int cur_game_frame = 0;
 		
 		// Input handling
 		public Input input;
@@ -189,7 +190,21 @@ namespace CornSnake {
 		}
 	
 		
-		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
+		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0, float x_scale = 1, float y_scale = 1, float rotation = 0) {		// Draws a specific frame of a sprite at (x, y) scene coordinates
+			//	Image frame = sprite.frames[index];
+			//	Raylib.ImageResize(ref frame, (int) x_scale * frame.Width, (int) y_scale * frame.Height);
+			Rectangle source	= new Rectangle	{	X = 0, Y = 0, 
+													Width = Math.Sign(x_scale) * sprite.frames[index].Width, Height = Math.Sign(y_scale) * sprite.frames[index].Height },
+
+					  dest		= new Rectangle	{	X = _x, Y = _y,
+													Width = Math.Abs(sprite.frames[index].Width * x_scale), Height = Math.Abs(sprite.frames[index].Height * y_scale) };
+
+			Vector2 origin = new Vector2(	(x_scale > 0) ? sprite.getOrgX() * x_scale : -Math.Abs((sprite.frames[index].Width - 3 * sprite.getOrgX())) * x_scale,
+											(y_scale > 0) ? sprite.getOrgY() * y_scale : -Math.Abs((sprite.frames[index].Height - 3 * sprite.getOrgY())) * y_scale);
+			
+			Console.WriteLine((x_scale > 0) ? sprite.getOrgX() : sprite.frames[index].Width - sprite.getOrgX());
+
+			Raylib.DrawTexturePro(sprite.frames[index], source, dest, origin, rotation, Color.WHITE);
 		}
 
 		public void renderDrawRect(int x1, int y1, int x2, int y2) {
@@ -308,6 +323,10 @@ namespace CornSnake {
 			return sprites[name];
 		}
 #endregion
+
+		public int getCurFrame() {
+			return this.cur_game_frame;
+		}
 	}
 }
 
