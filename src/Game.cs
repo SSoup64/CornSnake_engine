@@ -17,7 +17,9 @@ namespace CornSnake {
 		private int window_width, window_height;
 		
 		// Camera variables
+		Camera2D camera;
 		int camera_x, camera_y;
+		float camera_zoom;
 
 		private bool initialized = false;
 		private bool rendering = false;
@@ -43,6 +45,7 @@ namespace CornSnake {
 			cur_obj_id			= 0;
 
 			camera_x = camera_y = 0;
+			camera_zoom = 1;
 		}
 
 		// I don't really know how to call these functions.
@@ -80,6 +83,11 @@ namespace CornSnake {
 
 			// Set the exit key to no key
 			Raylib.SetExitKey(KeyboardKey.KEY_NULL);
+
+			// Create the camera
+			camera = new Camera2D();
+			camera.Zoom = camera_zoom;
+			camera.Target = new Vector2(camera_x, camera_y);
 
 			// Set the initialize variable to true
 			initialized = true;
@@ -131,14 +139,20 @@ namespace CornSnake {
 					var update_func = objects[i].GetType().GetMethod("afterUpdate");
 					update_func.Invoke(objects[i], new object[] {me});
 				}
+
+				// Update the camera variables
+				camera.Target = new Vector2(camera_x, camera_y);
+				camera.Zoom = camera_zoom;
 				
 				// Begin drawing
 				Raylib.BeginDrawing();
+				Raylib.BeginMode2D(camera);
 
 				// Render
 				this.render();
 				
 				// End drawing
+				Raylib.EndMode2D();
 				Raylib.EndDrawing();
 				
 				// Increment frame count
@@ -201,8 +215,6 @@ namespace CornSnake {
 
 			Vector2 origin = new Vector2(	(x_scale > 0) ? sprite.getOrgX() * x_scale : (sprite.frames[index].Width - sprite.getOrgX()) * Math.Abs(x_scale),
 											(y_scale > 0) ? sprite.getOrgY() * y_scale : (sprite.frames[index].Height - sprite.getOrgY()) * Math.Abs(y_scale));
-			
-			Console.WriteLine((x_scale > 0) ? sprite.getOrgX() : sprite.frames[index].Width - sprite.getOrgX());
 
 			Raylib.DrawTexturePro(sprite.frames[index], source, dest, origin, rotation, Color.WHITE);
 		}
@@ -266,25 +278,20 @@ namespace CornSnake {
 #endregion
 
 #region Functions that deal with the camera
-		/*
-		public void cameraResize(int w, int h) {
-			this.camera_rect.w = w;
-			this.camera_rect.h = h;
-			
-			SDL.SDL_FreeSurface(this.camera_surface);
+		public void cameraResize(float zoom) {
+			camera_zoom = zoom;
+		}
 
-			
-			camera_surface = SDL.SDL_CreateRGBSurface(	0,
-														camera_rect.w, camera_rect.h,
-														32, 0, 0, 0, 0);
+		public float cameraGetZoom() {
+			return camera_zoom;
 		}
 
 		public int cameraGetWidth() {
-			return this.camera_rect.w;
+			return window_width/Convert.ToInt32(camera_zoom);
 		}
 
 		public int cameraGetHeight() {
-			return this.camera_rect.h;
+			return window_height/Convert.ToInt32(camera_zoom);
 		}
 
 		public void cameraSetPos(int x, int y) {
@@ -307,7 +314,7 @@ namespace CornSnake {
 		public int cameraGetY() {
 			return this.camera_y;
 		}
-		*/
+		
 #endregion
 
 #region Functions that deal with sprites

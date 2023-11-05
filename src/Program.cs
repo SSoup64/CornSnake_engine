@@ -77,7 +77,7 @@ namespace Program {
 		}
 	}
 	
-	/*
+	
 	class ObjCamera : CornSnake.Object {
 		CornSnake.Object follow;
 		int smoothness = 4;
@@ -97,12 +97,12 @@ namespace Program {
 			// Calculate new X and Y
 			this.x += (camera_x_to - game.cameraGetX())/this.smoothness;
 			this.y += (camera_y_to - game.cameraGetY())/this.smoothness;
-			
+
 			// Set the camera's position
 			game.cameraSetPos(this.x, this.y);
 		}
 	}
-	*/
+	
 
 	class Program {
 		static void Main(string[] args) {
@@ -119,9 +119,9 @@ namespace Program {
 			// Create objects
 			game.instanceCreate<ObjTest>(64, 32);
 			game.instanceCreate<ObjPlayer>(16, 16);
-			// game.instanceCreate<ObjCamera>(0, 0);
+			game.instanceCreate<ObjCamera>(0, 0);
 			
-			// game.cameraResize(256, 192);
+			game.cameraResize(4);
 
 			// Run the game
 			game.run();
