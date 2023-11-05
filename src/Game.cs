@@ -199,8 +199,8 @@ namespace CornSnake {
 					  dest		= new Rectangle	{	X = _x, Y = _y,
 													Width = Math.Abs(sprite.frames[index].Width * x_scale), Height = Math.Abs(sprite.frames[index].Height * y_scale) };
 
-			Vector2 origin = new Vector2(	(x_scale > 0) ? sprite.getOrgX() * x_scale : -Math.Abs((sprite.frames[index].Width - 3 * sprite.getOrgX())) * x_scale,
-											(y_scale > 0) ? sprite.getOrgY() * y_scale : -Math.Abs((sprite.frames[index].Height - 3 * sprite.getOrgY())) * y_scale);
+			Vector2 origin = new Vector2(	(x_scale > 0) ? sprite.getOrgX() * x_scale : (sprite.frames[index].Width - sprite.getOrgX()) * Math.Abs(x_scale),
+											(y_scale > 0) ? sprite.getOrgY() * y_scale : (sprite.frames[index].Height - sprite.getOrgY()) * Math.Abs(y_scale));
 			
 			Console.WriteLine((x_scale > 0) ? sprite.getOrgX() : sprite.frames[index].Width - sprite.getOrgX());
 
