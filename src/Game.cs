@@ -117,9 +117,8 @@ namespace CornSnake {
 						objects.RemoveAt(i);
 						break;
 					}
-
-					var update_func = objects[i].GetType().GetMethod("beforeUpdate");
-					update_func.Invoke(objects[i], new object[] {me});
+					
+					((dynamic) objects[i]).beginUpdate(ref me);
 				}
 
 				// Run the onUpdate function on all the objects
@@ -129,8 +128,7 @@ namespace CornSnake {
 						break;
 					}
 
-					var update_func = objects[i].GetType().GetMethod("onUpdate");
-					update_func.Invoke(objects[i], new object[] {me});
+					((dynamic) objects[i]).onUpdate(ref me);
 				}
 
 				// Run the afterUpdate function on all the objects
@@ -140,8 +138,7 @@ namespace CornSnake {
 						break;
 					}
 
-					var update_func = objects[i].GetType().GetMethod("afterUpdate");
-					update_func.Invoke(objects[i], new object[] {me});
+					((dynamic) objects[i]).endUpdate(ref me);
 				}
 
 				// Update the camera variables
@@ -194,10 +191,18 @@ namespace CornSnake {
 
 			// Render the objects
 			var me = this;
+			
+			// 
+			foreach (var i in objects_render) {
+				((dynamic) (i)).beginRender(ref me);
+			}
 
 			foreach (var i in objects_render) {
-				var render_func = i.GetType().GetMethod("onRender");
-				render_func.Invoke(i, new object[] {me});
+				((dynamic) (i)).onRender(ref me);
+			}
+
+			foreach (var i in objects_render) {
+				((dynamic) (i)).endRender(ref me);
 			}
 		}
 
@@ -228,7 +233,19 @@ namespace CornSnake {
 			Raylib.DrawTexturePro(sprite.frames[index], source, dest, origin, rotation, Color.WHITE);
 		}
 
-		public void renderDrawRect(int x1, int y1, int x2, int y2) {
+		public void renderDrawRect(int x1, int y1, int x2, int y2, bool outline = false) {
+			int x, y, width, height;
+
+			x = Math.Min(x1, x2);
+			y = Math.Min(y1, y2);
+
+			width = Math.Max(x1 - x, x2 - x);
+			height = Math.Max(y1 - y, y2 - y);
+
+			if (outline)
+				Raylib.DrawRectangleLines(x, y, width, height, render_color);
+			else
+				Raylib.DrawRectangle(x, y, width, height, render_color);
 		}
 #endregion
 

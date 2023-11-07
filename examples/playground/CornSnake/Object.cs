@@ -32,21 +32,23 @@ namespace CornSnake {
 
 #region Events
 		// Create
-		public void onCreate(ref Game game)		{}
+		public virtual void onCreate(ref Game game)		{}
 		
 		// Destroy
-		public void onDestroy(ref Game game)	{}
+		public virtual void onDestroy(ref Game game)	{}
 		
 		// Update
-		public void beforeUpdate(ref Game game)	{}
-		public void onUpdate(ref Game game)		{}
-		public void afterUpdate(ref Game game)	{}
+		public virtual void beginUpdate(ref Game game)	{}
+		public virtual void onUpdate(ref Game game)		{}
+		public virtual void endUpdate(ref Game game)	{}
 		
 		// Render
-		public void onRender(ref Game game)	 {
+		public virtual void beginRender(ref Game game) {}
+		public virtual void onRender(ref Game game)	 {
 			if (!Object.Equals(sprite, default(Sprite)))
 				renderDrawSelf(ref game);
 		}
+		public virtual void endRender(ref Game game) {}
 #endregion
 
 		// Constructor and destructor

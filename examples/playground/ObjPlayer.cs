@@ -8,11 +8,11 @@ public class ObjPlayer : CornSnake.Object {
 		double hspd = 0, vspd = 0;
 		double hspd_frac = 0, vspd_frac = 0;
 		
-		public new void onCreate(ref Game game) {
+		public override void onCreate(ref Game game) {
 			this.sprite = game.spriteGet("spr_test");
 		}
 
-		public new void onUpdate(ref Game game) {
+		public override void onUpdate(ref Game game) {
 			// Input
 			bool right	= game.input.keyboardIsHeld(Keyboard.RIGHT);
 			bool left	= game.input.keyboardIsHeld(Keyboard.LEFT);
@@ -50,9 +50,9 @@ public class ObjPlayer : CornSnake.Object {
 			x_scale *= 2;
 		}
 
-		public new void onRender(ref Game game) {
+		public override void beginRender(ref Game game) {
 			game.renderSetColor(120, 120, 120);
-			game.renderDrawRect(0, 0, 100, 100);
+			game.renderDrawRect(0, 0, 100, 120);
 			this.renderDrawSelf(ref game);
 		}
 	}

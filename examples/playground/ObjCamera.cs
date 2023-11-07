@@ -6,14 +6,14 @@ namespace Program {
 		CornSnake.Object follow;
 		int smoothness = 4;
 
-		public new void onCreate(ref Game game) {
+		public override void onCreate(ref Game game) {
 			follow = (CornSnake.Object) game.instanceFind<ObjPlayer>();
 
 			this.x = game.cameraGetX();
 			this.y = game.cameraGetY();
 		}
 
-		public new void onUpdate(ref Game game) {
+		public override void endUpdate(ref Game game) {
 			// Calculate the camera_x_to and camera_y_to variables 
 			int camera_x_to = Math.Max(0, follow.x - game.cameraGetWidth()/2);
 			int camera_y_to = Math.Max(0, follow.y - game.cameraGetHeight()/2);
