@@ -1,9 +1,12 @@
 ﻿using System;
 using CornSnake;
 
-namespace Program {
-	class Program {
-		static void Main(string[] args) {
+namespace Program
+{
+	class Program
+    {
+		static void Main(string[] args)
+        {
 			// Create game object and initialize it.
 			CornSnake.Game game = new CornSnake.Game();
 			

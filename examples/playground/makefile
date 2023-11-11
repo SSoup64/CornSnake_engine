@@ -8,5 +8,6 @@ endif
 	cp -r ../../src/ ./CornSnake/
 
 	dotnet add package Raylib-cs
+	dotnet add package Newtonsoft.Json
 	
 	dotnet run
