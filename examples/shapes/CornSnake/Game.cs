@@ -282,6 +282,8 @@ namespace CornSnake
 
 			Raylib.DrawLineEx(vec_start, vec_end, (float) thickness, render_color);
 		}
+
+		// public void renderDrawLine
 		#endregion
 
 		#region Functions that deal with objects
