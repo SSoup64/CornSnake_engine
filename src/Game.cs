@@ -83,10 +83,11 @@ namespace CornSnake
 			this.window_width = window_width;
 			this.window_height = window_height;
 
+			// Set trace level
+			Raylib.SetTraceLogLevel(TraceLogLevel.LOG_ERROR);
+
 			// Create the window
 			Raylib.InitWindow(window_width, window_height, title);
-
-			// Raylib.SetWindowState(/*FLAG_VSYNC_HINT*/);
 
 			// Set default color
 			renderSetColor(0, 0, 0, 0);

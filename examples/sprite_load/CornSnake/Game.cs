@@ -83,10 +83,11 @@ namespace CornSnake
 			this.window_width = window_width;
 			this.window_height = window_height;
 
+			// Set trace level
+			Raylib.SetTraceLogLevel(TraceLogLevel.LOG_ERROR);
+
 			// Create the window
 			Raylib.InitWindow(window_width, window_height, title);
-
-			// Raylib.SetWindowState(/*FLAG_VSYNC_HINT*/);
 
 			// Set default color
 			renderSetColor(0, 0, 0, 0);
@@ -240,26 +241,15 @@ namespace CornSnake
 
 
 		public void renderDrawSprite(int _x, int _y, Sprite sprite, int index = 0, float x_scale = 1, float y_scale = 1, float rotation = 0)
-		{	   // Draws a specific frame of a sprite at (x, y) scene coordinates
+		{
 			if (!rendering)
 				return;
 			//	Image frame = sprite.frames[index];
 			//	Raylib.ImageResize(ref frame, (int) x_scale * frame.Width, (int) y_scale * frame.Height);
-			Rectangle source = new Rectangle
-			{
-				X = 0,
-				Y = 0,
-				Width = Math.Sign(x_scale) * sprite.frames[index].Width,
-				Height = Math.Sign(y_scale) * sprite.frames[index].Height
-			},
-
-					  dest = new Rectangle
-					  {
-						  X = _x,
-						  Y = _y,
-						  Width = Math.Abs(sprite.frames[index].Width * x_scale),
-						  Height = Math.Abs(sprite.frames[index].Height * y_scale)
-					  };
+			Rectangle	source = new Rectangle {	X = 0, Y = 0,
+													Width = Math.Sign(x_scale) * sprite.frames[index].Width, Height = Math.Sign(y_scale) * sprite.frames[index].Height },
+						dest = new Rectangle {	X = _x, Y = _y,
+												Width = Math.Abs(sprite.frames[index].Width * x_scale), Height = Math.Abs(sprite.frames[index].Height * y_scale) };
 
 			Vector2 origin = new Vector2((x_scale > 0) ? sprite.getOrgX() * x_scale : (sprite.frames[index].Width - sprite.getOrgX()) * Math.Abs(x_scale),
 											(y_scale > 0) ? sprite.getOrgY() * y_scale : (sprite.frames[index].Height - sprite.getOrgY()) * Math.Abs(y_scale));

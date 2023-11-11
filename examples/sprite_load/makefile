@@ -7,7 +7,5 @@ endif
 	# Maybe create an sh file that has all the files to wget in it.
 	cp -r ../../src/ ./CornSnake/
 
-	dotnet add package Raylib-cs
-	dotnet add package Newtonsoft.Json
-	
+	sh ./CornSnake/add_packages.sh
 	dotnet run

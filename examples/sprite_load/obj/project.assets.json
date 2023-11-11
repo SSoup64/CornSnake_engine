@@ -159,7 +159,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Newtonsoft.Json >= 13.0.3",
+      "Newtonsoft.json >= 13.0.3",
       "Raylib-cs >= 5.0.0"
     ]
   },
@@ -200,7 +200,7 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
-          "Newtonsoft.Json": {
+          "Newtonsoft.json": {
             "target": "Package",
             "version": "[13.0.3, )"
           },
