@@ -20,3 +20,4 @@
 /home/oem/Desktop/Programming/CS/CornSnake_Engine/examples/playground/obj/Debug/net6.0/ref/playground.dll
 /home/oem/Desktop/Programming/CS/CornSnake_Engine/examples/playground/obj/Debug/net6.0/playground.pdb
 /home/oem/Desktop/Programming/CS/CornSnake_Engine/examples/playground/obj/Debug/net6.0/playground.genruntimeconfig.cache
+/home/oem/Desktop/Programming/CS/CornSnake_Engine/examples/playground/bin/Debug/net6.0/Newtonsoft.Json.dll

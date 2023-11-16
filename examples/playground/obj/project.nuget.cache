@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KkdJmi/LPKSmLmDUVl107Nwb+jpNtAlLp2DLyl6uyLhLLfRGib3DOD9wIi65aCsdTmiDnL7XDo8P2U+aMAHIDA==",
+  "dgSpecHash": "029enUwXsH2o5lxJiyhUvO2OCBWpKpB0y8hIEyHNWIk+d5xLHulyieyodTZpZjC3Dp2jBF2D+qVKioV4S7HJwQ==",
   "success": true,
   "projectFilePath": "/home/oem/Desktop/Programming/CS/CornSnake_Engine/examples/playground/playground.csproj",
   "expectedPackageFiles": [
+    "/home/oem/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/home/oem/.nuget/packages/raylib-cs/5.0.0/raylib-cs.5.0.0.nupkg.sha512",
     "/home/oem/.nuget/packages/system.numerics.vectors/4.5.0/system.numerics.vectors.4.5.0.nupkg.sha512"
   ],

@@ -1,0 +1,12 @@
+{
+	"frames": 1,
+	"org_x": 3,
+	"org_y": 0,
+	"hitbox": {
+		"type": "rectangle",
+		"x": 0,
+		"y": 0,
+		"width": 32,
+		"height": 32
+	}
+}

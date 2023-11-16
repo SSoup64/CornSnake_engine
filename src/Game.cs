@@ -10,7 +10,7 @@ namespace CornSnake
 {
 	public class Game
 	{
-		#region Attributes
+#region Attributes
 		private List<object> objects;
 		private List<object> objects_render;
 		private uint cur_obj_id;
@@ -33,10 +33,7 @@ namespace CornSnake
 		private Color render_color;
 
 		private int cur_game_frame = 0;
-
-		// Input handling
-		public Input input;
-		#endregion
+#endregion
 
 		// Constructor
 		public Game()
@@ -46,7 +43,6 @@ namespace CornSnake
 
 			sprites = new Dictionary<string, Sprite>();
 
-			input = new Input();
 			cur_obj_id = 0;
 
 			camera_x = camera_y = 0;
@@ -224,7 +220,7 @@ namespace CornSnake
 		}
 
 
-		#region Functions that deal with the rendering
+#region Functions that deal with the rendering
 		public void renderSetColor(byte red, byte green, byte blue, byte alpha = 255)
 		{   // Sets the renderer's color
 			if (!rendering)
@@ -282,9 +278,9 @@ namespace CornSnake
 
 			Raylib.DrawLineEx(vec_start, vec_end, (float) thickness, render_color);
 		}
-		#endregion
+#endregion
 
-		#region Functions that deal with objects
+#region Functions that deal with objects
 		public void instanceCreate<T>(int x, int y) where T : Object, new()
 		{
 			var me = this;
@@ -343,9 +339,9 @@ namespace CornSnake
 					objects[i] = null;
 			}
 		}
-		#endregion
+#endregion
 
-		#region Functions that deal with the camera
+#region Functions that deal with the camera
 		public void cameraResize(float zoom)
 		{
 			camera_zoom = zoom;
@@ -392,9 +388,9 @@ namespace CornSnake
 			return camera_y;
 		}
 
-		#endregion
+#endregion
 
-		#region Functions that deal with sprites
+#region Functions that deal with sprites
 		public void spriteLoad(string name)
 		{
 			var me = this;
@@ -408,7 +404,51 @@ namespace CornSnake
 
 			return sprites[name];
 		}
-		#endregion
+#endregion
+
+#region Input
+		// Mouse
+		public int inputMouseGetX()
+		{
+			return Convert.ToInt32(Raylib.GetMouseX()/camera_zoom) + camera_x;
+		}
+
+		public int inputMouseGetY()
+		{
+			return Convert.ToInt32(Raylib.GetMouseY()/camera_zoom) + camera_y;
+		}
+
+		public bool inputMouseIsHeld(Mouse button)
+		{
+			return Raylib.IsMouseButtonDown((Raylib_cs.MouseButton) button);
+		}
+
+		public bool inputMouseIsPressed(Mouse button)
+		{
+			return Raylib.IsMouseButtonPressed((Raylib_cs.MouseButton) button);
+		}
+
+		public bool inputMouseIsReleased(Mouse button)
+		{
+			return Raylib.IsMouseButtonReleased((Raylib_cs.MouseButton) button);
+		}
+
+		// keyboard
+		public bool inputKeyboardIsHeld(Keyboard key)
+		{
+			return Raylib.IsKeyDown((Raylib_cs.KeyboardKey) key);
+		}
+
+		public bool inputKeyboardIsPressed(Keyboard key)
+		{
+			return Raylib.IsKeyPressed((Raylib_cs.KeyboardKey) key);
+		}
+
+		public bool inputKeyboardIsReleased(Keyboard key)
+		{
+			return Raylib.IsKeyReleased((Raylib_cs.KeyboardKey) key);
+		}
+#endregion
 
 		public int getCurFrame()
 		{

@@ -14,12 +14,12 @@ public class ObjPlayer : CornSnake.Object {
 
 		public override void onUpdate(ref Game game) {
 			// Input
-			bool right	= game.input.keyboardIsHeld(Keyboard.RIGHT);
-			bool left	= game.input.keyboardIsHeld(Keyboard.LEFT);
-			bool up		= game.input.keyboardIsHeld(Keyboard.UP);
-			bool down	= game.input.keyboardIsHeld(Keyboard.DOWN);
+			bool right	= game.inputKeyboardIsHeld(Keyboard.RIGHT);
+			bool left	= game.inputKeyboardIsHeld(Keyboard.LEFT);
+			bool up		= game.inputKeyboardIsHeld(Keyboard.UP);
+			bool down	= game.inputKeyboardIsHeld(Keyboard.DOWN);
 			
-			bool space	= game.input.keyboardIsPressed(Keyboard.SPACE);
+			bool space	= game.inputKeyboardIsPressed(Keyboard.SPACE);
 			
 			// Find the direction along the x and y axis
 			int dir_x = Convert.ToInt32(right) - Convert.ToInt32(left);

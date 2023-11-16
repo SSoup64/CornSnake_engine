@@ -4,6 +4,16 @@ namespace CornSnake
 {
 	// This enum is literally just the Raylib keycode enum without the KEY_ prefix.
 	// May god forgive me
+	public enum Mouse
+	{
+		LEFT = 0,
+		RIGHT = 1,
+		MIDDLE = 2,
+		SIDE = 3,
+		EXTRA = 4,
+		FOWARD = 5,
+		BACK = 6,
+	}
 
 	public enum Keyboard
 	{

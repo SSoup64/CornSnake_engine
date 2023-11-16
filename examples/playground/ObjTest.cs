@@ -9,6 +9,15 @@ namespace Program {
 
 		public override void onUpdate(ref Game game) {
 			this.depth = -this.y;
+			
+			if (game.inputMouseIsPressed(Mouse.LEFT))
+				Console.WriteLine("Left was pressed");
+			
+			if (game.inputMouseIsReleased(Mouse.LEFT))
+				Console.WriteLine("Left was released");
+
+			if (game.inputMouseIsHeld(Mouse.RIGHT))
+				Console.WriteLine("Right is held");
 		}
 
 		public override void onRender(ref Game game) {
