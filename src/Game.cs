@@ -448,6 +448,32 @@ namespace CornSnake
 		{
 			return Raylib.IsKeyReleased((Raylib_cs.KeyboardKey) key);
 		}
+
+		// Gamepad
+		public bool inputGamepadExists(int gamepad = 0)
+		{
+			return Raylib.IsGamepadAvailable(gamepad);
+		}
+
+		public bool inputGamepadIsHeld(GamepadButton btn, int gamepad = 0)
+		{
+			return Raylib.IsGamepadButtonDown(gamepad, (Raylib_cs.GamepadButton) btn);
+		}
+
+		public bool inputGamepadIsPressed(GamepadButton btn, int gamepad = 0)
+		{
+			return Raylib.IsGamepadButtonPressed(gamepad, (Raylib_cs.GamepadButton) btn);
+		}
+
+		public bool inputGamepadIsReleased(GamepadButton btn, int gamepad = 0)
+		{
+			return Raylib.IsGamepadButtonReleased(gamepad, (Raylib_cs.GamepadButton) btn);
+		}
+
+		public float GetGamepadAxis(GamepadAxis axis, int gamepad = 0)
+		{
+			return Raylib.GetGamepadAxisMovement(gamepad, ((Raylib_cs.GamepadAxis) axis));
+		}
 #endregion
 
 		public int getCurFrame()
